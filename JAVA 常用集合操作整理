@@ -1,0 +1,105 @@
+      	 为了在刷题和实际应用中有效使用各种数据结构和其操作，并且提高代码效率，简洁代码风格，因此有必要对JAVA中的数据结构和集合进行总结。
+      	 以下主要总结了栈、队列、map和set以及其他一些主要数据结构的主要内容，比较重要的还进行了其实现的总结。
+    
+1  集合接口
+       	JAVA开始只为最常用的数据结构提供了个很少的一组类，Vector、Stack、HashTable、BitSet、Enumeration。
+       	Java集合类库将接口和实现分离开来。例如队列。
+       	队列借口指出可以在队列的尾部添加元素，在队列的头部删除元素，并且可以查找队列中元素的个数。数列操作按照先进先出的原则进行操作。
+       
+       	JAVA类库中的集合接口和迭代器接口：
+              public interface Collection<E>{
+                     boolean add(E element);
+                     Iterator<E> iterator();
+                     ...
+              }
+       	add方法用于向集合添加元素。iterator方法则返回了一个实现了Iterator接口的对象，可以使用这个迭代器对象依次返回集合中的元素。
+       	Iterator接口包含3个方法，如下所示：
+            public interface Iterator<E>{
+                     E next();
+                     boolean hasNext();
+                     void remove();
+              }
+       	反复调用next方法，可以逐步访问集合中的元素，直至最后一个。但是访问到最后一个元素时，next()方法会抛出一个NoSuchElementException。Collection接口扩展了Iterable接口，因此对于标准类库里面的任何集合都可以使用for-each循环。
+	删除元素，remove()。Iterator接口的删除方法会删除上次调用next方法时返回的元素。next方法和remove方法的调用具有相互依赖性，如果调用remove之前没有调用next方法会抛出IllegalStateException。
+	泛型实用方法，由于Collection和Iterator都是泛型接口，因此可以编写任何集合类型的实用方法。
+	附录：
+              java.util.collection:
+                     Iterator<E> iterator():  返回一个迭代器对象；
+                     int size()：返回集合元素个数；
+                     boolean isEmpty(): 是否有元素；
+                     boolean contains(Object obj): 是否包含一个和obj相等的对象；
+                     boolean containsAll(Colleaction<?> other):是否包含所有；
+                     boolean add(E element)
+                     boolean addAll(Colleaction<?> other): 在尾部添加other的所有元素；
+                     void clear();
+                     java.util.iterator<E>:
+                            boolean hasNext();
+                            E next();
+                            void remove();
+2  具体集合
+2.1 链表
+       LinkedList，优点是添加和删除元素代价较小，缺点是查找元素代价很大。Java中每个节点还存放着对上一个节点的引用。
+              ListIterator()方法，包含add方法，previous()方法，hasPrevious()方法，next方法，hasnext方法。并且有set()方法，令新元素取代上一次next或previous返回的元素。
+              List有get方法，得到index为n时的元素。
+              API：
+              java.util.list:
+                     ListIterator<E> listIterator(): 返回一个列表迭代器。
+                     ListIterator<E> listIterator(int index):返回一个列表迭代器，这个迭代器第一次调用next返回给定索引index的元素。
+                     void add(int i, E element):在i 位置添加element；
+                     void addAll(int i, Collection<?> other): 同上，只是添加的是列表；
+                     E remove(int i)；
+                     E set(int i, E element);
+                     int indexOf(Object obj);
+                     int lastIndexOf(Object obj);
+2.2 散列集
+	有一种数据结构，可以快速地查找所需要的对象，这就是散列表(HashTable)。HashTable为每一个对象计算一个整数，为散列码(HashCode)。hashTable由链表实现。散列表可以用来实现几种重要的数据结构。
+	最简单的是set类型，set是没有重复元素的集合。Java类库提供了一个HashSet类，它实现了基于散列表的集。
+
+
+2.3 树集
+       TreeSet与散列集十分类似，只是是一个有序的集合。将一个元素添加到树中的操作比添加到HashSet中要慢，时间复杂度为O(logn)。
+
+
+2.4 队列和双端队列
+       有两个端头的队列，为双端队列。JAVA SE6 引入了Deque接口，由ArrayDeque和LinkedList实现。
+       java.util.queue<E>:
+       boolean add(E element);
+       boolean offer(E element)：添加一个元素到队尾，如果队列不满则返回true，满则第一个方法抛出IllegalStateException，第二个方法返回false。
+       E remove();
+       E poll();
+       E element();
+       E peek()：返回队列头部元素，但不删除。如果队列空，第一个方法抛出NoSuchElementException。第二个方法返回null。
+       java.util.deque<E>:
+              方法略。
+
+
+2.5 优先队列(priorityQueue)
+	优先队列中的元素可以按照任何顺序插入，却总是按照排序的顺序进行检索。PriorityQueue由堆(heap)实现。堆是一个可以自我调整的二叉树，对树执行添加和删除操作，可以让最小的元素移动到根，而不必花费时间对元素进行排序。
+	
+2.6 映射表
+	集可以快速地查找元素，但是要查看一个元素，需要有要查找元素的精准副本。通常的作法是，我们知道某些键的信息，并查找对应的元素。映射表(map)数据结构为此设计，用来存放键值对。
+	JAVA类库为映射表提供了两个通用的实现：HashMap和TreeMap。HashMap对键进行散列，TreeMap用键的整体顺序对元素进行排序，并形成搜索树。散列和比较函数只能作用于键。
+	map.put(keyType key, VaueType value);添加对象的时候，必须同时提供一个键。
+	value = map.get(keyType key); 检索一个对象的时候，也必须提供一个键。
+	remove方法用于从映射表中删除给定键对应的元素，size方法返回映射表的大小。
+	有3个视图，Set<k>  keySet(); Collection<k> values(); Set<Map.entry<k,v>> entrySet()。分别是：键集、值集合和键值对集。可以通过map直接使用。
+	java.util.Map<K, V>:
+		V get(Object key);
+		V put(K key, V value);
+		void putAll(Map<? extends K, ? extends V> entries);
+		boolean containsKey(K key);
+		boolean containsValue(Object value);
+		Set<Map.entry<k,v>> entrySet();
+		Set<K> keySet();
+              Collection<V> values();
+		
+	
+	
+		
+
+
+	
+
+
+
+
